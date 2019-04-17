@@ -1,7 +1,168 @@
-<h1>{{.PageTitle}}</h1>
-<ul>
-    {{range .History}}
-            <li class="done">{{.CDP.DaiNet}}</li>
-            <li>{{.CDP.EthNet}}</li>
-    {{end}}
-</ul>
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{.PageTitle}}</title>
+  <meta name="description" content="CDP - History">
+  <meta name="author" content="Anvenouz">
+
+  <style>
+    body{text-align: center;}
+    div.container .col-2:last-child{float:right;}
+    div.container .col-2:first-child{float:left;}
+    .col-2{width:50%;}
+  </style>
+
+</head>
+
+<body>
+  <h1>{{.PageTitle}}</h1>
+  <h4>Last update : <span id="lastDate">{{.LastDate}}</span></h4>
+  <canvas id="chartEth"></canvas>
+  <canvas id="chartDai"></canvas>
+  <div class="container">
+    <div class="col-2" >
+      <canvas id="price"></canvas>
+    </div>
+    <div class="col-2" >
+      <canvas id="priceEthNet"></canvas>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+  <script>
+
+    var ctx = document.getElementById('chartEth').getContext('2d');
+    var lastDate = document.getElementById('lastDate').textContent;
+    var getZero = function(dateTime) {
+        if(dateTime < 10){
+            return "0" + dateTime;
+        }
+        return dateTime;
+    };
+    var convertDate = function(dateToConvert, withHours = false){
+        var date = new Date(dateToConvert*1000);
+        // Hours part from the timestamp
+        var day = getZero(date.getDay());
+        var month = getZero(date.getMonth());
+        var hours = getZero(date.getHours());
+        var years = date.getFullYear();
+        // Minutes part from the timestamp
+        var minutes = getZero(date.getMinutes());
+        // Seconds part from the timestamp
+        var seconds = getZero(date.getSeconds());
+
+        // Will display time in 10:30:23 format
+        var formattedTime =  day + "/" + month + "/" + years;
+        if(withHours === true){
+            formattedTime = day + "/" + month + "/" + years + " " + hours + ":" + minutes + ":" + seconds;
+        }
+        return formattedTime;
+    };
+
+    document.getElementById("lastDate").textContent = convertDate(lastDate, true);
+    // console.log();
+
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+            datasets: [{
+                label: 'EthNet',
+                backgroundColor: 'rgb(255, 132, 99)',
+                // fill: false,
+                borderColor: 'rgb(255, 132, 99)',
+                data: [ {{range .History}} '{{.CDP.EthNet}}', {{end}} ]
+            },
+            {
+                label: 'EthCol',
+                backgroundColor: 'rgb(99, 255, 132)',
+                // borderColor: 'rgb(255, 99, 132)',
+                fill: false,
+                data: [ {{range .History}} '{{.CDP.EthCol}}', {{end}} ]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx = document.getElementById('chartDai').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+            datasets: [{
+                label: 'DaiNet',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                // fill: false,
+                data: [ {{range .History}} '{{.CDP.DaiNet}}', {{end}} ]
+            },
+            {
+                label: 'DaiDebt',
+                backgroundColor: 'rgb(99, 255, 132)',
+                // borderColor: 'rgb(255, 99, 132)',
+                fill: false,
+                data: [ {{range .History}} '{{.CDP.DaiDebt}}', {{end}} ]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+    var ctx = document.getElementById('price').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+            datasets: [{
+                label: 'Price ETH',
+                backgroundColor: 'rgb(150, 99, 250)',
+                borderColor: 'rgb(150, 99, 250)',
+                // fill: false,
+                data: [ {{range .History}} '{{.CDP.Price}}', {{end}} ]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+
+    var ctx = document.getElementById('priceEthNet').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+            datasets: [{
+                label: 'EthNet',
+                backgroundColor: 'rgb(99, 150, 250)',
+                borderColor: 'rgb(99, 150, 250)',
+                // fill: false,
+                data: [ {{range .History}} '{{.CDP.EthNet}}', {{end}} ]
+            }]
+        },
+
+        // Configuration options go here
+        options: {}
+    });
+
+  </script>
+
+</body>
+</html>
