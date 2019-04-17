@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -69,7 +68,6 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("templates/template.html"))
-	fmt.Println(len(CDPData))
 	lastDate := CDPData[len(CDPData)-1].Date
 	data := HTMLPage{
 		PageTitle: "CDP - HISTORY",

@@ -42,34 +42,34 @@
         return dateTime;
     };
     var convertDate = function(dateToConvert, withHours = false){
-        var date = new Date(dateToConvert*1000);
+        var date = new Date(dateToConvert * 1000);
         // Hours part from the timestamp
-        var day = getZero(date.getDay());
-        var month = getZero(date.getMonth());
-        var hours = getZero(date.getHours());
+        var day = getZero(date.getDate());
+        var month = getZero(date.getMonth() + 1);
         var years = date.getFullYear();
+        years = years.toString().substring(2,5);
+        var hours = getZero(date.getHours());
         // Minutes part from the timestamp
         var minutes = getZero(date.getMinutes());
         // Seconds part from the timestamp
         var seconds = getZero(date.getSeconds());
 
         // Will display time in 10:30:23 format
-        var formattedTime =  day + "/" + month + "/" + years;
+        var formattedTime =  day + "/" + month + "/" + years + " - " + hours + "h" + minutes;
         if(withHours === true){
             formattedTime = day + "/" + month + "/" + years + " " + hours + ":" + minutes + ":" + seconds;
         }
         return formattedTime;
     };
 
-    var arrayDate = [ {{range .History}} '{{.Date}}', {{end}} ];
+    var arrayDate = [ {{range .History}} convertDate('{{.Date}}'), {{end}} ];
     var arrayEthNet = [ {{range .History}} '{{.CDP.EthNet}}', {{end}} ];
     var arrayPrice = [ {{range .History}} '{{.CDP.Price}}', {{end}} ];
     var arrayDaiDebt = [ {{range .History}} '{{.CDP.DaiDebt}}', {{end}} ];
     var arrayDaiNet = [ {{range .History}} '{{.CDP.DaiNet}}', {{end}} ];
     var arrayEthCol = [ {{range .History}} '{{.CDP.EthCol}}', {{end}} ];
 
-    document.getElementById("lastDate").textContent = convertDate(lastDate, true);
-    // console.log();
+    document.getElementById("lastDate").textContent = convertDate(lastDate);
 
     var chart = new Chart(ctx, {
         // The type of chart we want to create
