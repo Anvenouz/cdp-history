@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -54,14 +55,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	CDPData = make([]History, 1000)
 	err = json.Unmarshal(data, &CDPData)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/", index)           // set router
-	err = http.ListenAndServe(":"+ strconv.Itoa(*port), nil) // set listen port
+	http.HandleFunc("/", index)                             // set router
+	err = http.ListenAndServe(":"+strconv.Itoa(*port), nil) // set listen port
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
@@ -69,6 +69,7 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	tmpl := template.Must(template.ParseFiles("templates/template.html"))
+	fmt.Println(len(CDPData))
 	lastDate := CDPData[len(CDPData)-1].Date
 	data := HTMLPage{
 		PageTitle: "CDP - HISTORY",

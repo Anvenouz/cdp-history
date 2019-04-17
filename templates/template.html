@@ -61,6 +61,13 @@
         return formattedTime;
     };
 
+    var arrayDate = [ {{range .History}} '{{.Date}}', {{end}} ];
+    var arrayEthNet = [ {{range .History}} '{{.CDP.EthNet}}', {{end}} ];
+    var arrayPrice = [ {{range .History}} '{{.CDP.Price}}', {{end}} ];
+    var arrayDaiDebt = [ {{range .History}} '{{.CDP.DaiDebt}}', {{end}} ];
+    var arrayDaiNet = [ {{range .History}} '{{.CDP.DaiNet}}', {{end}} ];
+    var arrayEthCol = [ {{range .History}} '{{.CDP.EthCol}}', {{end}} ];
+
     document.getElementById("lastDate").textContent = convertDate(lastDate, true);
     // console.log();
 
@@ -70,20 +77,20 @@
 
         // The data for our dataset
         data: {
-          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+          labels: arrayDate,
             datasets: [{
                 label: 'EthNet',
                 backgroundColor: 'rgb(255, 132, 99)',
                 // fill: false,
                 borderColor: 'rgb(255, 132, 99)',
-                data: [ {{range .History}} '{{.CDP.EthNet}}', {{end}} ]
+                data: arrayEthNet
             },
             {
                 label: 'EthCol',
                 backgroundColor: 'rgb(99, 255, 132)',
                 // borderColor: 'rgb(255, 99, 132)',
                 fill: false,
-                data: [ {{range .History}} '{{.CDP.EthCol}}', {{end}} ]
+                data: arrayEthCol
             }]
         },
 
@@ -98,20 +105,20 @@
 
         // The data for our dataset
         data: {
-          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+          labels: arrayDate,
             datasets: [{
                 label: 'DaiNet',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
                 // fill: false,
-                data: [ {{range .History}} '{{.CDP.DaiNet}}', {{end}} ]
+                data: arrayDaiNet
             },
             {
                 label: 'DaiDebt',
                 backgroundColor: 'rgb(99, 255, 132)',
                 // borderColor: 'rgb(255, 99, 132)',
                 fill: false,
-                data: [ {{range .History}} '{{.CDP.DaiDebt}}', {{end}} ]
+                data: arrayDaiDebt
             }]
         },
 
@@ -126,13 +133,13 @@
 
         // The data for our dataset
         data: {
-          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+          labels: arrayDate,
             datasets: [{
-                label: 'Price ETH',
+                label: 'Price (ETH)',
                 backgroundColor: 'rgb(150, 99, 250)',
                 borderColor: 'rgb(150, 99, 250)',
                 // fill: false,
-                data: [ {{range .History}} '{{.CDP.Price}}', {{end}} ]
+                data: arrayPrice
             }]
         },
 
@@ -148,13 +155,13 @@
 
         // The data for our dataset
         data: {
-          labels: [ {{range .History}} convertDate({{.Date}}), {{end}} ],
+          labels: arrayDate,
             datasets: [{
                 label: 'EthNet',
                 backgroundColor: 'rgb(99, 150, 250)',
                 borderColor: 'rgb(99, 150, 250)',
                 // fill: false,
-                data: [ {{range .History}} '{{.CDP.EthNet}}', {{end}} ]
+                data: arrayEthNet
             }]
         },
 
