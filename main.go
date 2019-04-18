@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 type (
@@ -42,7 +41,7 @@ var (
 
 func main() {
 	jsonFile := flag.String("file", "", "History file from your cdp.")
-	port := flag.Int("port", 80, "Port to use for the service")
+	host := flag.String("host", "localhost:8888", "Hostname or IP and port to use for the service")
 	flag.Parse()
 
 	if "" == *jsonFile {
@@ -59,8 +58,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/", index)                             // set router
-	err = http.ListenAndServe(":"+strconv.Itoa(*port), nil) // set listen port
+	http.HandleFunc("/", index)           // set router
+	err = http.ListenAndServe(*host, nil) // set listen host
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
