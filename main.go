@@ -36,11 +36,12 @@ type (
 
 var (
 	//CDPData for page history
-	CDPData []History
+	CDPData  []History
+	jsonFile *string
 )
 
 func main() {
-	jsonFile := flag.String("file", "", "History file from your cdp.")
+	jsonFile = flag.String("file", "", "History file from your cdp.")
 	host := flag.String("host", "localhost:8888", "Hostname or IP and port to use for the service")
 	flag.Parse()
 
@@ -66,6 +67,7 @@ func main() {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+	readJSONFile(jsonFile)
 	tmpl := template.Must(template.ParseFiles("templates/template.html"))
 	lastDate := CDPData[len(CDPData)-1].Date
 	data := HTMLPage{
@@ -76,5 +78,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 	err := tmpl.Execute(w, data)
 	if nil != err {
 		log.Println(err)
+	}
+}
+
+func readJSONFile(file *string) {
+	data, err := ioutil.ReadFile(*file)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = json.Unmarshal(data, &CDPData)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
