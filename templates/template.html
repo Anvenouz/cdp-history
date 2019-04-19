@@ -18,7 +18,22 @@
 
 <body>
   <h1>{{.PageTitle}}</h1>
-  <h4>Last update : <span id="lastDate">{{.LastDate}}</span></h4>
+  <h4>
+    - Last update -<br>
+    <span id="lastDate">{{.LastDate}}</span>
+  </h4>
+
+  <h4>
+    - Current - <br>
+    Price: {{.Equalizer.Current.Price}}
+    Net: {{.Equalizer.Current.EthNet}}Ξ
+    ({{.Equalizer.Current.DaiNet}}DAI)
+    <br>
+    Ratio: {{.Equalizer.Current.Ratio}}
+    <br>
+    -
+  </h4>
+
   <canvas id="chartEth"></canvas>
   <canvas id="chartDai"></canvas>
   <div class="container">
@@ -29,37 +44,19 @@
       <canvas id="priceEthNet"></canvas>
     </div>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
   <script>
 
     var ctx = document.getElementById('chartEth').getContext('2d');
     var lastDate = document.getElementById('lastDate').textContent;
-    var getZero = function(dateTime) {
-        if(dateTime < 10){
-            return "0" + dateTime;
-        }
-        return dateTime;
-    };
     var convertDate = function(dateToConvert, withHours = false){
-        var date = new Date(dateToConvert * 1000);
-        // Hours part from the timestamp
-        var day = getZero(date.getDate());
-        var month = getZero(date.getMonth() + 1);
-        var years = date.getFullYear();
-        years = years.toString().substring(2,5);
-        var hours = getZero(date.getHours());
-        // Minutes part from the timestamp
-        var minutes = getZero(date.getMinutes());
-        // Seconds part from the timestamp
-        var seconds = getZero(date.getSeconds());
-
-        // Will display time in 10:30:23 format
-        var formattedTime =  day + "/" + month + "/" + years + " - " + hours + "h" + minutes;
-        if(withHours === true){
-            formattedTime = day + "/" + month + "/" + years + " " + hours + ":" + minutes + ":" + seconds;
+        var date = moment(dateToConvert * 1000);
+        if(withHours == false) {
+          return date;
         }
-        return formattedTime;
+        return date.format('DD/MM/YYYY HH:mm:ss');
     };
 
     var arrayDate = [ {{range .History}} convertDate('{{.Date}}'), {{end}} ];
@@ -69,8 +66,8 @@
     var arrayDaiNet = [ {{range .History}} '{{.CDP.DaiNet}}', {{end}} ];
     var arrayEthCol = [ {{range .History}} '{{.CDP.EthCol}}', {{end}} ];
 
-    document.getElementById("lastDate").textContent = convertDate(lastDate);
-
+    document.getElementById("lastDate").textContent = convertDate(lastDate, true);
+    // var timeFormat = "DD/MM/YYYY HH:mm";
     var chart = new Chart(ctx, {
         // The type of chart we want to create
         type: 'line',
@@ -85,17 +82,63 @@
                 borderColor: 'rgb(255, 132, 99)',
                 data: arrayEthNet
             },
-            {
-                label: 'EthCol',
-                backgroundColor: 'rgb(99, 255, 132)',
-                // borderColor: 'rgb(255, 99, 132)',
-                fill: false,
-                data: arrayEthCol
-            }]
+            // {
+            //     label: 'EthCol',
+            //     backgroundColor: 'rgb(99, 255, 132)',
+            //     // borderColor: 'rgb(255, 99, 132)',
+            //     fill: false,
+            //     data: arrayEthCol
+            // }
+            ]
         },
 
         // Configuration options go here
-        options: {}
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        // parser: timeFormat,
+                        // round: 'day'
+                        tooltipFormat: 'll HH:mm',
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'll'//'DD MMM YYYY'
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date',
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Eth'
+                    }
+                }]
+            },
+
+            tooltips: {
+              // mode: 'index'
+              callbacks: {
+                  // label: function(tooltipItem, data) {
+                  //     var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                  //
+                  //     if (label) {
+                  //         label += ': ';
+                  //     }
+                  //     label += tooltipItem.yLabel;
+                  //     label += " test";
+                  //     return label;
+                  // },
+                  afterLabel: function(tooltipItem, data){
+                      var label = '$ Price: ' + arrayPrice[tooltipItem.datasetIndex];
+                      return label;
+                  },
+              }
+          }
+        }
     });
 
     var ctx = document.getElementById('chartDai').getContext('2d');
@@ -123,51 +166,126 @@
         },
 
         // Configuration options go here
-        options: {}
+        options: {
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        // parser: timeFormat,
+                        // round: 'day'
+                        tooltipFormat: 'll HH:mm',
+                        unit: 'day',
+                        displayFormats: {
+                            day: 'll'//'DD MMM YYYY'
+                        }
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Date'
+                    }
+                }],
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Eth'
+                    }
+                }]
+            },
+        }
     });
 
-    var ctx = document.getElementById('price').getContext('2d');
-    var chart = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
-
-        // The data for our dataset
-        data: {
-          labels: arrayDate,
-            datasets: [{
-                label: 'Price (ETH)',
-                backgroundColor: 'rgb(150, 99, 250)',
-                borderColor: 'rgb(150, 99, 250)',
-                // fill: false,
-                data: arrayPrice
-            }]
-        },
-
-        // Configuration options go here
-        options: {}
-    });
-
-
-    var ctx = document.getElementById('priceEthNet').getContext('2d');
-    var chart = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'line',
-
-        // The data for our dataset
-        data: {
-          labels: arrayDate,
-            datasets: [{
-                label: 'EthNet',
-                backgroundColor: 'rgb(99, 150, 250)',
-                borderColor: 'rgb(99, 150, 250)',
-                // fill: false,
-                data: arrayEthNet
-            }]
-        },
-
-        // Configuration options go here
-        options: {}
-    });
+    // var ctx = document.getElementById('price').getContext('2d');
+    // var chart = new Chart(ctx, {
+    //     // The type of chart we want to create
+    //     type: 'line',
+    //
+    //     // The data for our dataset
+    //     data: {
+    //       labels: arrayDate,
+    //         datasets: [{
+    //             label: 'Price (ETH)',
+    //             backgroundColor: 'rgb(150, 99, 250)',
+    //             borderColor: 'rgb(150, 99, 250)',
+    //             // fill: false,
+    //             data: arrayPrice
+    //         }]
+    //     },
+    //
+    //     // Configuration options go here
+    //     options: {
+    //         scales: {
+    //             xAxes: [{
+    //                 type: 'time',
+    //                 time: {
+    //                     // parser: timeFormat,
+    //                     // round: 'day'
+    //                     tooltipFormat: 'll HH:mm',
+    //                     unit: 'day',
+    //                     displayFormats: {
+    //                         day: 'll'//'DD MMM YYYY'
+    //                     }
+    //                 },
+    //                 scaleLabel: {
+    //                     display: true,
+    //                     labelString: 'Date'
+    //                 }
+    //             }],
+    //             yAxes: [{
+    //                 scaleLabel: {
+    //                     display: true,
+    //                     labelString: 'Eth'
+    //                 }
+    //             }]
+    //         },
+    //     }
+    // });
+    //
+    //
+    // var ctx = document.getElementById('priceEthNet').getContext('2d');
+    // var chart = new Chart(ctx, {
+    //     // The type of chart we want to create
+    //     type: 'line',
+    //
+    //     // The data for our dataset
+    //     data: {
+    //       labels: arrayDate,
+    //         datasets: [{
+    //             label: 'EthNet',
+    //             backgroundColor: 'rgb(99, 150, 250)',
+    //             borderColor: 'rgb(99, 150, 250)',
+    //             // fill: false,
+    //             data: arrayEthNet
+    //         }]
+    //     },
+    //
+    //     // Configuration options go here
+    //     options: {
+    //         scales: {
+    //             xAxes: [{
+    //                 type: 'time',
+    //                 time: {
+    //                     // parser: timeFormat,
+    //                     round: 'day',
+    //                     tooltipFormat: 'll HH:mm',
+    //                     unit: 'day',
+    //                     displayFormats: {
+    //                         day: 'll'//'DD MMM YYYY'
+    //                     }
+    //                 },
+    //                 scaleLabel: {
+    //                     display: true,
+    //                     labelString: 'Date'
+    //                 }
+    //             }],
+    //             yAxes: [{
+    //                 scaleLabel: {
+    //                     display: true,
+    //                     labelString: 'Eth'
+    //                 }
+    //             }]
+    //         },
+    //     }
+    // });
 
   </script>
 
