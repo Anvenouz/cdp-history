@@ -32,8 +32,8 @@ type (
 	EqualizerCDP struct {
 		Current  *CDP  `json:"current"`
 		KeyPrices []CDP `json:"KeyPrices"`
-		Up       []CDP `json:"Up"`
-		Down     []CDP `json:"Down"`
+		//Up       [50]CDP `json:"Up"`
+		//Down     [50]CDP `json:"Down"`
 	}
 
 	//HTMLPage page html returned

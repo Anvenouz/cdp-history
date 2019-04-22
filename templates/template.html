@@ -9,9 +9,6 @@
 
   <style>
     body{text-align: center;}
-    div.container .col-2:last-child{float:right;}
-    div.container .col-2:first-child{float:left;}
-    .col-2{width:50%;}
   </style>
 
 </head>
@@ -36,14 +33,6 @@
 
   <canvas id="chartEth"></canvas>
   <canvas id="chartDai"></canvas>
-  <div class="container">
-    <div class="col-2" >
-      <canvas id="price"></canvas>
-    </div>
-    <div class="col-2" >
-      <canvas id="priceEthNet"></canvas>
-    </div>
-  </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
@@ -149,20 +138,20 @@
         // The data for our dataset
         data: {
           labels: arrayDate,
-            datasets: [{
-                label: 'DaiNet',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                // fill: false,
-                data: arrayDaiNet
-            },
-            {
-                label: 'DaiDebt',
-                backgroundColor: 'rgb(99, 255, 132)',
-                // borderColor: 'rgb(255, 99, 132)',
-                fill: false,
-                data: arrayDaiDebt
-            }]
+          datasets: [{
+              label: 'DaiNet',
+              backgroundColor: 'rgb(255, 99, 132)',
+              borderColor: 'rgb(255, 99, 132)',
+              // fill: false,
+              data: arrayDaiNet
+          },
+          {
+              label: 'DaiDebt',
+              backgroundColor: 'rgb(99, 255, 132)',
+              // borderColor: 'rgb(255, 99, 132)',
+              fill: false,
+              data: arrayDaiDebt
+          }]
         },
 
         // Configuration options go here
@@ -194,40 +183,38 @@
         }
     });
 
-    // var ctx = document.getElementById('price').getContext('2d');
+    // var ctx = document.getElementById('Up').getContext('2d');
     // var chart = new Chart(ctx, {
     //     // The type of chart we want to create
     //     type: 'line',
     //
     //     // The data for our dataset
     //     data: {
-    //       labels: arrayDate,
+    //       labels: label2,
     //         datasets: [{
-    //             label: 'Price (ETH)',
+    //             label: 'Equalized Eth',
     //             backgroundColor: 'rgb(150, 99, 250)',
     //             borderColor: 'rgb(150, 99, 250)',
-    //             // fill: false,
-    //             data: arrayPrice
-    //         }]
+    //             fill: false,
+    //             data: eqUpEth //hiUpEth
+    //         },
+    //         {
+    //             label: 'History Eth',
+    //             backgroundColor: 'rgb(150, 99, 250)',
+    //             borderColor: 'rgb(150, 99, 250)',
+    //             fill: false,
+    //             data: hiUpEth //hiUpEth
+    //         }
+    //         ]
     //     },
     //
     //     // Configuration options go here
     //     options: {
     //         scales: {
     //             xAxes: [{
-    //                 type: 'time',
-    //                 time: {
-    //                     // parser: timeFormat,
-    //                     // round: 'day'
-    //                     tooltipFormat: 'll HH:mm',
-    //                     unit: 'day',
-    //                     displayFormats: {
-    //                         day: 'll'//'DD MMM YYYY'
-    //                     }
-    //                 },
     //                 scaleLabel: {
     //                     display: true,
-    //                     labelString: 'Date'
+    //                     labelString: 'Price'
     //                 }
     //             }],
     //             yAxes: [{
@@ -239,6 +226,7 @@
     //         },
     //     }
     // });
+
     //
     //
     // var ctx = document.getElementById('priceEthNet').getContext('2d');
