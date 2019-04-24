@@ -64,20 +64,31 @@
         // The data for our dataset
         data: {
           labels: arrayDate,
-            datasets: [{
+            datasets: [
+            {
+                label: 'Price',
+                backgroundColor: 'rgb(99, 255, 132)',
+                // borderColor: 'rgb(255, 99, 132)',
+                fill: false,
+                data: arrayPrice,
+                yAxisID: 'y-axis-1'
+            },
+                {
                 label: 'EthNet',
                 backgroundColor: 'rgb(255, 132, 99)',
                 // fill: false,
                 borderColor: 'rgb(255, 132, 99)',
-                data: arrayEthNet
+                data: arrayEthNet,
+                yAxisID: 'y-axis-2'
             },
-            // {
-            //     label: 'EthCol',
-            //     backgroundColor: 'rgb(99, 255, 132)',
-            //     // borderColor: 'rgb(255, 99, 132)',
-            //     fill: false,
-            //     data: arrayEthCol
-            // }
+            {
+                label: 'DaiNeth',
+                backgroundColor: 'rgb(255, 99, 132)',
+                // fill: false,
+                borderColor: 'rgb(255, 99, 132)',
+                data: arrayDaiNet,
+                yAxisID: 'y-axis-3'
+            }
             ]
         },
 
@@ -101,11 +112,34 @@
                     }
                 }],
                 yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Eth'
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'left',
+                    id: 'y-axis-1',
+                }, {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'right',
+                    id: 'y-axis-2',
+
+                    // grid line settings
+                    gridLines: {
+                        drawOnChartArea: false, // only want the grid lines for one axis to show up
+                    },
+                },
+                  {
+                    type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    display: true,
+                    position: 'left',
+                    id: 'y-axis-3',
+
+                    // grid line settings
+                    gridLines: {
+                      drawOnChartArea: false, // only want the grid lines for one axis to show up
                     }
-                }]
+                  }
+
+                ],
             },
 
             tooltips: {
